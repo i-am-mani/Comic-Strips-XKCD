@@ -114,6 +114,7 @@
                                 android:src="@drawable/ic_random"
                                 android:tint="#1E88E5"
                                 app:backgroundTint="#64B5F6"
+                                android:onClick="@{() -> viewmodel.loadRandomComicStrip()}"
                                 app:borderWidth="0dp" />
                         </LinearLayout>
                     </FrameLayout>

@@ -8,6 +8,7 @@ import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 class HomeViewModel(val repository: ComicStripsRepository) :
@@ -59,6 +60,12 @@ class HomeViewModel(val repository: ComicStripsRepository) :
         if (comicNumber != null && (comicNumber - 1 > 0)) {
             fetchComicWithNumber(comicNumber - 1)
         }
+    }
+
+    fun loadRandomComicStrip(){
+        // TODO cache shown comic strip numbers, and don't show same strip more the once.
+        val nextComicNumber = Random.nextInt(MAX_COMIC_NUMBER)
+        fetchComicWithNumber(nextComicNumber)
     }
 
     fun getComicStripNumber(): Int? {
