@@ -1,21 +1,20 @@
-package com.omega.xkcd.presentation.feature_home
+package com.omega.xkcd.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omega.xkcd.domain.models.XKCDComicStripModel
+import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 
 class HomeViewModel(val repository: ComicStripsRepository) :
     ViewModel() {
 
     val TAG = "HomeViewModel"
-    val mComicStrip = MutableLiveData<XKCDComicStripModel>()
+    val mComicStrip = MutableLiveData<ComicStripDomainModel>()
     private var MAX_COMIC_NUMBER = 2222
     val isLoading = MutableLiveData<Boolean>(true)
 
@@ -24,7 +23,7 @@ class HomeViewModel(val repository: ComicStripsRepository) :
             try {
                 val latestComicStrip = repository.getLatestComicStrip()
                 mComicStrip.postValue(latestComicStrip)
-                MAX_COMIC_NUMBER = latestComicStrip.num
+                MAX_COMIC_NUMBER = latestComicStrip.number
                 isLoading.postValue(false)
             } catch (e: Exception) {
                 Log.e(TAG, "Exception occured = $e",e)
@@ -63,7 +62,7 @@ class HomeViewModel(val repository: ComicStripsRepository) :
     }
 
     fun getComicStripNumber(): Int? {
-        return mComicStrip.value?.num
+        return mComicStrip.value?.number
     }
 
 }

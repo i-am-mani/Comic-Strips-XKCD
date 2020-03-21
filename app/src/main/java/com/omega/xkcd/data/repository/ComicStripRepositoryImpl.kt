@@ -1,23 +1,24 @@
 package com.omega.xkcd.data.repository
 
-import com.omega.xkcd.data.room.XKCDComicStripDao
+import com.omega.xkcd.data.room.ComicStripDao
 import com.omega.xkcd.data.retrofit.XKCDComicStripRetrofitService
-import com.omega.xkcd.domain.models.XKCDComicStripModel
+import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
 
-class ComicStripRepositoryImpl(private val database: XKCDComicStripDao, private val remote: XKCDComicStripRetrofitService) :
+class ComicStripRepositoryImpl(private val database: ComicStripDao, private val remote: XKCDComicStripRetrofitService) :
     ComicStripsRepository {
 
-    override suspend fun getLatestComicStrip(): XKCDComicStripModel {
-        return remote.getLatestXKCDComic()  // TODO: Provide Caching facility
+    override suspend fun getLatestComicStrip(): ComicStripDomainModel {
+        return remote.getLatestXKCDComic().toComicStripDomainModel()  // TODO: Provide Caching facility
     }
 
-    override suspend fun getComicStrip(number: Int): XKCDComicStripModel {
-        return  remote.getXKCDComic(number)
+    override suspend fun getComicStrip(number: Int): ComicStripDomainModel {
+        return  remote.getXKCDComic(number).toComicStripDomainModel()
     }
 
-    override suspend fun getAllFavoriteComicStrips(): List<XKCDComicStripModel> {
-        return database.getFavoriteComicStrips()  // TODO: Provide Cashing facility
+    override suspend fun getAllFavoriteComicStrips(): List<ComicStripDomainModel> {
+        val roomModels = database.getComicStrips()
+        return roomModels.map { roomModel -> roomModel.toDomainModel() }
     }
 
 }

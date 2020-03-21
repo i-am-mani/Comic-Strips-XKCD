@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.omega.xkcd.databinding.FragmentHomeBinding
-import com.omega.xkcd.presentation.feature_home.HomeViewModel
+import com.omega.xkcd.presentation.viewmodels.HomeViewModel
 import com.omega.xkcd.utils.InjectionFragment
 import org.kodein.di.generic.instance
 

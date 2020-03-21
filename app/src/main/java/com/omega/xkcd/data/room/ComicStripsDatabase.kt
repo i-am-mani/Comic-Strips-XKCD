@@ -4,12 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.omega.xkcd.domain.models.XKCDComicStripModel
 
-@Database(entities = arrayOf(XKCDComicStripModel::class), version = 1)
+@Database(entities = arrayOf(ComicStripRoomModel::class), version = 3, exportSchema = false)
 abstract class ComicStripsDatabase : RoomDatabase() {
 
-    abstract fun XKCDComicStripDao(): XKCDComicStripDao
+    abstract fun comicStripDao(): ComicStripDao
 
     companion object {
         private lateinit var INSTANCE: ComicStripsDatabase
@@ -18,7 +17,7 @@ abstract class ComicStripsDatabase : RoomDatabase() {
                 synchronized(ComicStripsDatabase::class) {
                     INSTANCE = Room.databaseBuilder(
                         context.applicationContext,
-                        ComicStripsDatabase::class.java, "comicStrips.db"
+                        ComicStripsDatabase::class.java, "ComicStrips.db"
                     ).build()
                 }
             }

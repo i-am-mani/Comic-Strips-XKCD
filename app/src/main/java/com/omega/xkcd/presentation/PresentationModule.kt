@@ -1,7 +1,7 @@
 package com.omega.xkcd.presentation
 
 import androidx.fragment.app.Fragment
-import com.omega.xkcd.presentation.feature_home.HomeViewModel
+import com.omega.xkcd.presentation.viewmodels.HomeViewModel
 import com.omega.xkcd.utils.KotlinViewModelProvider
 import org.kodein.di.Kodein
 import org.kodein.di.android.x.AndroidLifecycleScope

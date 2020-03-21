@@ -21,8 +21,7 @@ class ComicStripsApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
 //        import(androidXModule(this@ComicStripsApplication))
         bind<ComicStripsDatabase>() with singleton {
-            Log.wtf("DEBUG", "this@...  = $this@ComicStripsApplication")
-            ComicStripsDatabase.getDatabase(context as Context)
+            ComicStripsDatabase.getDatabase(this@ComicStripsApplication)
         }
         import(appModule)
         import(dataModule)

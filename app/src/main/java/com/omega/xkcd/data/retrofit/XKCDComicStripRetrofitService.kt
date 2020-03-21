@@ -1,7 +1,5 @@
 package com.omega.xkcd.data.retrofit
 
-import com.omega.xkcd.domain.models.XKCDComicStripModel
-import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
 
