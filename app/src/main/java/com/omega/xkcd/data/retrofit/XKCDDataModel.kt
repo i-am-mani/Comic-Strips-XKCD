@@ -31,7 +31,7 @@ data class XKCDComicStripModel(
     }
 
     fun toComicStripDomainModel(): ComicStripDomainModel {
-        val date = Date(year, month, day)
+        val date = Date(year - 1900, month - 1, day)
         return ComicStripDomainModel(
             number = num,
             date = date,
