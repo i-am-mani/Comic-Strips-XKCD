@@ -16,65 +16,173 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.HomeFragment"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Home"/>
-
-        <com.google.android.material.card.MaterialCardView
+        android:orientation="vertical"
+        >
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                tools:context=".presentation.HomeFragment">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    app:cardCornerRadius="4dp"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="casual"
+                        android:text="@{viewmodel.mComicStrip.title}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        tools:text="2010 and 2020" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView"
+                    android:layout_width="0dp"
+                    android:layout_height="400dp"
+                    android:layout_marginTop="16dp"
+                    app:cardElevation="6dp"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/comicDate">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerInside"
+                            app:showImage="@{viewmodel.mComicStrip.imgRemotePath}"
+                            app:srcCompat="@mipmap/ic_launcher" />
+
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center"
+                            android:backgroundTint="@android:color/transparent"
+                            android:onClick="@{() -> viewmodel.previousComicStrip()}"
+                            android:src="@drawable/ic_previous" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center"
+                            android:backgroundTint="@android:color/transparent"
+                            android:onClick="@{() -> viewmodel.nextComicStrip()}"
+                            android:src="@drawable/ic_next" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:src="@drawable/ic_favorite"
+                                android:tint="@android:color/holo_red_dark"
+                                app:backgroundTint="#EF5350"
+                                app:borderWidth="0dp" />
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_random"
+                                android:tint="#1E88E5"
+                                app:backgroundTint="#64B5F6"
+                                app:borderWidth="0dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
-                    android:id="@+id/title"
-                    android:text="@{viewmodel.mComicStrip.title}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:id="@+id/comicNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@{Integer.toString(viewmodel.mComicStrip.number)}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="166" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp">
+                <TextView
+                    android:id="@+id/comicDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+                    android:text="@{viewmodel.mComicStrip.date.toLocaleString()}"
+                    tools:text="03-12-2003" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="350dp"
-                        app:showImage="@{viewmodel.mComicStrip.imgRemotePath}"/>
-                </FrameLayout>
-
-                <FrameLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="16dp"
+                    app:cardElevation="7dp"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_previous"
-                        android:layout_gravity="start"
-                        android:onClick="@{() -> viewmodel.previousComicStrip()}"
-                        />
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:src="@drawable/ic_next"
-                        android:onClick="@{() -> viewmodel.nextComicStrip()}"
-                        />
-                </FrameLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-thin"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:text="alt"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:text="@{viewmodel.mComicStrip.alt}"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            tools:text="Huge Huge alt text" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </LinearLayout>
+
+
+
+
 </layout>
