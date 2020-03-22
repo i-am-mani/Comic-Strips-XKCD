@@ -1,10 +1,9 @@
 package com.omega.xkcd.presentation.viewmodels
 
+import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
 import kotlinx.coroutines.Dispatchers
@@ -12,74 +11,124 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
-class HomeViewModel(val repository: ComicStripsRepository) :
-    ViewModel() {
+class HomeViewModel(private val repository: ComicStripsRepository, application: Application) :
+    AndroidViewModel(application) {
 
     val TAG = "HomeViewModel"
     val mComicStrip = MutableLiveData<ComicStripDomainModel>()
     private var MAX_COMIC_NUMBER = 2222
-    val isLoading = MutableLiveData<Boolean>(true)
+    var mState = MutableLiveData<State>(State.All)
+    val isFavoriteMode: LiveData<Boolean> = Transformations.map(mState) { mState.value == State.Favorite}
 
     init {
+        fetchLatestComicStrip()
+    }
+
+    private fun fetchLatestComicStrip() {
         viewModelScope.launch {
             try {
-                val latestComicStrip = repository.getLatestComicStrip()
+                val latestComicStrip = if (mState.value == State.All) {
+                    repository.getLatestComicStrip()
+                } else {
+                    repository.getLatestFavoriteComicStrip()
+                }
+
                 mComicStrip.postValue(latestComicStrip)
                 MAX_COMIC_NUMBER = latestComicStrip.number
-                isLoading.postValue(false)
             } catch (e: Exception) {
-                Log.e(TAG, "Exception occured = $e",e)
+                Log.e(TAG, "Exception occurred = $e", e)
             }
         }
     }
 
 
     private fun fetchComicWithNumber(number: Int) {
-        isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val comicStrip = repository.getComicStrip(number)
+                val comicStrip = if(mState.value == State.All){
+                    repository.getComicStrip(number)
+                } else {
+                    repository.getLatestFavoriteComicStrip()
+                }
+
                 mComicStrip.postValue(comicStrip)
-                isLoading.postValue(false)
             } catch (e: Exception) {
-                Log.e(TAG, "An Exception Occurred",e)
+                Log.e(TAG, "An Exception Occurred", e)
             }
         }
     }
 
     fun nextComicStrip() {
-        Log.d(TAG, "Fetching Next comic strip")
-        val comicNumber = getComicStripNumber()
-        if (comicNumber != null && (comicNumber + 1 < MAX_COMIC_NUMBER)) {
-            fetchComicWithNumber(comicNumber + 1)
+        Toast.makeText(getApplication(),"Fetching next comic",Toast.LENGTH_LONG).show()
+        if (mState.value == State.All) {
+            val comicNumber = getComicStripNumber()
+            if (comicNumber != null && (comicNumber + 1 < MAX_COMIC_NUMBER)) {
+                fetchComicWithNumber(comicNumber + 1)
+            }
+        } else {
+            viewModelScope.launch {
+                try{
+                    val favoriteComicStrip = repository.getNextFavoriteComicStrip()
+                    mComicStrip.postValue(favoriteComicStrip)
+                } catch (e: Exception){
+                    Log.e(TAG, "An Error Occurred $e",e)
+                }
+            }
         }
     }
 
     fun previousComicStrip() {
-        Log.d(TAG, "Fetching previous comic strip")
-        val comicNumber = getComicStripNumber()
-        if (comicNumber != null && (comicNumber - 1 > 0)) {
-            fetchComicWithNumber(comicNumber - 1)
+        Toast.makeText(getApplication(),"Fetching previous comic",Toast.LENGTH_LONG).show()
+        if (mState.value == State.All) {
+            val comicNumber = getComicStripNumber()
+            if (comicNumber != null && (comicNumber - 1 > 0)) {
+                fetchComicWithNumber(comicNumber - 1)
+            }
+        }else {
+            viewModelScope.launch {
+                try{
+                    val favoriteComicStrip = repository.getPreviousFavoriteComicStrip()
+                    mComicStrip.postValue(favoriteComicStrip)
+                } catch (e: Exception){
+                    Log.e(TAG, "An Error Occurred $e",e)
+                }
+            }
         }
     }
 
-    fun loadRandomComicStrip(){
-        // TODO cache shown comic strip numbers, and don't show same strip more the once.
+    fun loadRandomComicStrip() {
         val nextComicNumber = Random.nextInt(MAX_COMIC_NUMBER)
         fetchComicWithNumber(nextComicNumber)
     }
 
-    fun getComicStripNumber(): Int? {
+    private fun getComicStripNumber(): Int? {
         return mComicStrip.value?.number
     }
 
-    fun addToLocalDB(){
+    fun addToLocalDB() {
         viewModelScope.launch {
-            mComicStrip.value?.let{comicStrip ->
+            mComicStrip.value?.let { comicStrip ->
                 val response = repository.addComicStripToFavorites(comicStrip)
+                if(response){
+                    Toast.makeText(getApplication(),"Added to favorites",Toast.LENGTH_LONG).show()
+                }
                 Log.d(TAG, "reponse == $response")
             }
         }
     }
 
+    fun toggleFavoriteMode() {
+        if(mState.value == State.All){
+            mState.value = State.Favorite
+        } else{
+            mState.value = State.All
+        }
+        fetchLatestComicStrip()
+    }
+
+}
+
+enum class State {
+    All,
+    Favorite
 }

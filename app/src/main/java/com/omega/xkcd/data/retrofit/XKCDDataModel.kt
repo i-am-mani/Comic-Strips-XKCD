@@ -1,6 +1,5 @@
 package com.omega.xkcd.data.retrofit
 
-import androidx.core.util.TimeUtils
 import com.omega.xkcd.data.room.ComicStripRoomModel
 import com.omega.xkcd.domain.enum.ComicStripProviders
 import com.omega.xkcd.domain.models.ComicStripDomainModel

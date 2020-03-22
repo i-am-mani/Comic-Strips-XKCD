@@ -8,8 +8,6 @@ import java.util.*
 
 @Entity
 data class ComicStripRoomModel(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 1,
     val number: Int, // Comic number for the provider
     val date: Long?,
     val title: String,
@@ -19,6 +17,9 @@ data class ComicStripRoomModel(
     val imgRemotePath: String,
     val provider: String // like XKCD,Dilbert etc
 ) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+
     fun toDomainModel(): ComicStripDomainModel {
         val d = if(date != null) {
             Date(date)

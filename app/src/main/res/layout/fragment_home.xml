@@ -6,7 +6,7 @@
     <data>
 
         <import type="android.view.View"/>
-
+        <import type="com.omega.xkcd.presentation.viewmodels.State"/>
         <variable
             name="viewmodel"
             type="com.omega.xkcd.presentation.viewmodels.HomeViewModel" />
@@ -49,7 +49,7 @@
                         android:fontFamily="casual"
                         android:text="@{viewmodel.mComicStrip.title}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        tools:text="2010 and 2020" />
+                        tools:text="2010 and 202" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -99,23 +99,23 @@
                             android:gravity="center"
                             android:orientation="horizontal">
 
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            <ImageButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
+                                android:onClick="@{() -> viewmodel.addToLocalDB()}"
                                 android:src="@drawable/ic_favorite"
                                 android:tint="@android:color/holo_red_dark"
-                                app:backgroundTint="#EF5350"
-                                android:onClick="@{() -> viewmodel.addToLocalDB()}"
+                                app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
 
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            <ImageButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:onClick="@{() -> viewmodel.loadRandomComicStrip()}"
                                 android:src="@drawable/ic_random"
                                 android:tint="#1E88E5"
-                                app:backgroundTint="#64B5F6"
-                                android:onClick="@{() -> viewmodel.loadRandomComicStrip()}"
+                                app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
                         </LinearLayout>
                     </FrameLayout>
@@ -180,6 +180,36 @@
                             tools:text="Huge Huge alt text" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="8sp"
+                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
+                    app:hide="@{viewmodel.isFavoriteMode()}"
+                    android:src="@drawable/ic_favorite"
+                    app:tint="@android:color/holo_red_dark"
+                    android:backgroundTint="@color/DangerLightText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#90CAF9"
+                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
+                    app:hide="@{!viewmodel.isFavoriteMode()}"
+                    android:src="@drawable/ic_fire"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/Blue800" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </LinearLayout>

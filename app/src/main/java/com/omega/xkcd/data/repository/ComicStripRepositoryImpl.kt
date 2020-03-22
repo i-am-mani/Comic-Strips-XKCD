@@ -8,6 +8,37 @@ import com.omega.xkcd.domain.repository.ComicStripsRepository
 
 class ComicStripRepositoryImpl(private val database: ComicStripDao, private val remote: XKCDComicStripRetrofitService) :
     ComicStripsRepository {
+    private var currentComicStripId:Int = -1
+
+    override suspend fun getNextFavoriteComicStrip(): ComicStripDomainModel {
+        return if(currentComicStripId != -1){
+            val idToFetch = currentComicStripId + 1
+            val comicStrip = database.getComicStrip(idToFetch).toDomainModel()
+            currentComicStripId = idToFetch
+            comicStrip
+        } else{
+            getLatestComicStrip()
+        }
+    }
+
+    override suspend fun getPreviousFavoriteComicStrip(): ComicStripDomainModel {
+        return if(currentComicStripId != -1){
+            val idToFetch = currentComicStripId - 1
+            val comicStripRoomModel = database.getComicStrip(idToFetch)
+            val comicStrip = comicStripRoomModel.toDomainModel()
+            currentComicStripId = idToFetch
+            comicStrip
+        } else{
+            getLatestComicStrip()
+        }
+    }
+
+    override suspend fun getLatestFavoriteComicStrip(): ComicStripDomainModel {
+        val latestComicStrip = database.getLatestComicStrip()
+        currentComicStripId = latestComicStrip.id
+        return latestComicStrip.toDomainModel()
+    }
+
     override suspend fun addComicStripToFavorites(comicStrip: ComicStripDomainModel): Boolean {
         val model = ComicStripRoomModel.fromDomainModel(comicStrip)
         val response = database.addComicStrip(model)
@@ -15,16 +46,11 @@ class ComicStripRepositoryImpl(private val database: ComicStripDao, private val 
     }
 
     override suspend fun getLatestComicStrip(): ComicStripDomainModel {
-        return remote.getLatestXKCDComic().toComicStripDomainModel()  // TODO: Provide Caching facility
+        return remote.getLatestXKCDComic().toComicStripDomainModel()
     }
 
     override suspend fun getComicStrip(number: Int): ComicStripDomainModel {
         return  remote.getXKCDComic(number).toComicStripDomainModel()
-    }
-
-    override suspend fun getAllFavoriteComicStrips(): List<ComicStripDomainModel> {
-        val roomModels = database.getComicStrips()
-        return roomModels.map { roomModel -> roomModel.toDomainModel() }
     }
 
 }
