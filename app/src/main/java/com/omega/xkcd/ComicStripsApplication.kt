@@ -6,7 +6,6 @@ import android.util.Log
 import com.omega.xkcd.data.dataModule
 import com.omega.xkcd.data.room.ComicStripsDatabase
 import com.omega.xkcd.domain.domainModule
-import com.omega.xkcd.presentation.presentationModule
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -25,8 +24,6 @@ class ComicStripsApplication : Application(), KodeinAware {
         }
         import(appModule)
         import(dataModule)
-        import(presentationModule)
-//        import(domainModule)
         constant("max") with 5
         bind<String>() with singleton { String() }
     }

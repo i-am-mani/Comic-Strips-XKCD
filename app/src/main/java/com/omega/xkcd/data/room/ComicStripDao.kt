@@ -14,4 +14,7 @@ interface ComicStripDao {
 
     @Query("SELECT * from ComicStripRoomModel WHERE id = :id")
     suspend fun getComicStrip(id: Int): ComicStripRoomModel
+
+    @Query("SELECT * from ComicStripRoomModel WHERE number=:number")
+    suspend fun getComicStripByNumber(number:Int): ComicStripRoomModel?
 }

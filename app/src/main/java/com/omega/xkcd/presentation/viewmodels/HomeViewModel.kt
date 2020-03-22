@@ -19,7 +19,6 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     private var MAX_COMIC_NUMBER = 2222
     var mState = MutableLiveData<State>(State.All)
     val isFavoriteMode: LiveData<Boolean> = Transformations.map(mState) { mState.value == State.Favorite}
-
     init {
         fetchLatestComicStrip()
     }
@@ -62,7 +61,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
         Toast.makeText(getApplication(),"Fetching next comic",Toast.LENGTH_LONG).show()
         if (mState.value == State.All) {
             val comicNumber = getComicStripNumber()
-            if (comicNumber != null && (comicNumber + 1 < MAX_COMIC_NUMBER)) {
+            if (comicNumber != null && (comicNumber + 1 <= MAX_COMIC_NUMBER)) {
                 fetchComicWithNumber(comicNumber + 1)
             }
         } else {
@@ -110,10 +109,12 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
             mComicStrip.value?.let { comicStrip ->
                 val response = repository.addComicStripToFavorites(comicStrip)
                 if(response){
+                    comicStrip.isFavorite = true
                     Toast.makeText(getApplication(),"Added to favorites",Toast.LENGTH_LONG).show()
                 }
                 Log.d(TAG, "reponse == $response")
             }
+            mComicStrip.value = mComicStrip.value
         }
     }
 

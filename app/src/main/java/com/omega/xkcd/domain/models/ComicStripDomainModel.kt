@@ -10,5 +10,6 @@ data class ComicStripDomainModel(
     val alt: String,
     val imgRemotePath: String,
     val imageLocalPath: String? = null,
+    var isFavorite: Boolean = false,
     val provider: String // like XKCD,Dilbert etc
 )

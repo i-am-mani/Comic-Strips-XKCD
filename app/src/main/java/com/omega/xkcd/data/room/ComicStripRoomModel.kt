@@ -34,6 +34,7 @@ data class ComicStripRoomModel(
             alt = alt,
             imageLocalPath = imgLocalPath,
             imgRemotePath = imgRemotePath,
+            isFavorite = true,
             provider = provider
             )
     }

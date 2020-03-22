@@ -46,11 +46,22 @@ class ComicStripRepositoryImpl(private val database: ComicStripDao, private val 
     }
 
     override suspend fun getLatestComicStrip(): ComicStripDomainModel {
-        return remote.getLatestXKCDComic().toComicStripDomainModel()
+        val domainModel = remote.getLatestXKCDComic().toComicStripDomainModel()
+        return markDomainModelFavorite(domainModel)
     }
 
     override suspend fun getComicStrip(number: Int): ComicStripDomainModel {
-        return  remote.getXKCDComic(number).toComicStripDomainModel()
+        val domainModel = remote.getXKCDComic(number).toComicStripDomainModel()
+        return markDomainModelFavorite(domainModel)
     }
 
+    private suspend fun markDomainModelFavorite(comicStrip:ComicStripDomainModel): ComicStripDomainModel{
+        val localCopy = database.getComicStripByNumber(comicStrip.number)
+        return if(localCopy != null){
+            comicStrip.isFavorite = true
+            comicStrip
+        } else {
+            comicStrip
+        }
+    }
 }

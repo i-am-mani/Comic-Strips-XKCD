@@ -104,7 +104,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
                                 android:onClick="@{() -> viewmodel.addToLocalDB()}"
-                                android:src="@drawable/ic_favorite"
+                                android:src='@{!viewmodel.mComicStrip.isFavorite? @drawable/ic_favorite_plus:@drawable/ic_favorite_minus}'
                                 android:tint="@android:color/holo_red_dark"
                                 app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
