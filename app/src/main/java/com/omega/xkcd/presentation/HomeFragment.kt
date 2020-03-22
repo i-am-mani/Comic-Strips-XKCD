@@ -24,7 +24,6 @@ class HomeFragment : InjectionFragment() {
         val viewBinding = FragmentHomeBinding.inflate(inflater,container,false)
         viewBinding.lifecycleOwner = this
         viewBinding.viewmodel = mViewModel
-        Log.d(TAG, "Home Fragment")
         return viewBinding.root
     }
 

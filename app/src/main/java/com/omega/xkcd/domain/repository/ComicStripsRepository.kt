@@ -7,4 +7,5 @@ interface ComicStripsRepository {
     suspend fun getLatestComicStrip(): ComicStripDomainModel
     suspend fun getComicStrip(number: Int): ComicStripDomainModel
     suspend fun getAllFavoriteComicStrips(): List<ComicStripDomainModel>
+    suspend fun addComicStripToFavorites(comicStrip: ComicStripDomainModel): Boolean
 }

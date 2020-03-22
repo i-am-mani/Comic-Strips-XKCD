@@ -1,6 +1,7 @@
 package com.omega.xkcd.presentation.viewmodels
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -70,6 +71,15 @@ class HomeViewModel(val repository: ComicStripsRepository) :
 
     fun getComicStripNumber(): Int? {
         return mComicStrip.value?.number
+    }
+
+    fun addToLocalDB(){
+        viewModelScope.launch {
+            mComicStrip.value?.let{comicStrip ->
+                val response = repository.addComicStripToFavorites(comicStrip)
+                Log.d(TAG, "reponse == $response")
+            }
+        }
     }
 
 }

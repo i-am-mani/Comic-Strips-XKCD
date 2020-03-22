@@ -106,6 +106,7 @@
                                 android:src="@drawable/ic_favorite"
                                 android:tint="@android:color/holo_red_dark"
                                 app:backgroundTint="#EF5350"
+                                android:onClick="@{() -> viewmodel.addToLocalDB()}"
                                 app:borderWidth="0dp" />
 
                             <com.google.android.material.floatingactionbutton.FloatingActionButton

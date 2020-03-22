@@ -2,6 +2,7 @@ package com.omega.xkcd.data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.omega.xkcd.domain.enum.ComicStripProviders
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import java.util.*
 
@@ -10,7 +11,7 @@ data class ComicStripRoomModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 1,
     val number: Int, // Comic number for the provider
-    val date: Long,
+    val date: Long?,
     val title: String,
     val transcript: String,
     val alt: String,
@@ -19,7 +20,11 @@ data class ComicStripRoomModel(
     val provider: String // like XKCD,Dilbert etc
 ) {
     fun toDomainModel(): ComicStripDomainModel {
-        val d = Date(date)
+        val d = if(date != null) {
+            Date(date)
+        } else{
+            null
+        }
         return ComicStripDomainModel(
             number = number,
             date = d,
@@ -30,5 +35,20 @@ data class ComicStripRoomModel(
             imgRemotePath = imgRemotePath,
             provider = provider
             )
+    }
+
+    companion object{
+        fun fromDomainModel(domainModel: ComicStripDomainModel): ComicStripRoomModel{
+            val (number, date, title, transcript, alt, imgRemotePath, imageLocalPath, provider) = domainModel
+            return ComicStripRoomModel(
+                number = number,
+                date = date?.time,
+                title = title,
+                transcript = transcript,
+                alt = alt,
+                imgRemotePath = imgRemotePath,  // Yet to add Local Storage facility
+                provider = ComicStripProviders.XKCD.name
+            )
+        }
     }
 }

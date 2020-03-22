@@ -1,14 +1,12 @@
 package com.omega.xkcd.data.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 
 @Dao
 interface ComicStripDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun addComicStrip(comicStripDomain: ComicStripRoomModel) : Long
 
     @Query("SELECT * FROM ComicStripRoomModel")
