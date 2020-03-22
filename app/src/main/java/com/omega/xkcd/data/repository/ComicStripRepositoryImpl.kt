@@ -9,48 +9,44 @@ import com.omega.xkcd.domain.repository.ComicStripsRepository
 
 class ComicStripRepositoryImpl(private val database: ComicStripDao, private val remote: XKCDComicStripRetrofitService) :
     ComicStripsRepository {
+
+    private lateinit var mFavoriteComicStrips: MutableList<ComicStripDomainModel>
+    private var mIdx = 0
+
     override suspend fun removeComicStripFromFavorite(comicStrip: ComicStripDomainModel): Boolean {
         val roomModel = ComicStripRoomModel.fromDomainModel(comicStrip)
-        val removeCount = database.removeComicStrip(roomModel.number)
-        Log.d("REPO", "removeCount = $removeCount")
-        return removeCount > 0
+        val status = database.removeComicStrip(roomModel.number) > 0
+        if(status)mFavoriteComicStrips.removeIf { it.number == roomModel.number }
+        return status
     }
 
-    private var currentComicStripId:Int = -1
-
     override suspend fun getNextFavoriteComicStrip(): ComicStripDomainModel {
-        return if(currentComicStripId != -1){
-            val idToFetch = currentComicStripId + 1
-            val comicStrip = database.getComicStrip(idToFetch).toDomainModel()
-            currentComicStripId = idToFetch
-            comicStrip
-        } else{
-            getLatestComicStrip()
-        }
+        val count = mFavoriteComicStrips.count()
+        mIdx = (mIdx + 1) % count
+        // wrap around if out of index
+        return mFavoriteComicStrips[mIdx]
     }
 
     override suspend fun getPreviousFavoriteComicStrip(): ComicStripDomainModel {
-        return if(currentComicStripId != -1){
-            val idToFetch = currentComicStripId - 1
-            val comicStripRoomModel = database.getComicStrip(idToFetch)
-            val comicStrip = comicStripRoomModel.toDomainModel()
-            currentComicStripId = idToFetch
-            comicStrip
-        } else{
-            getLatestComicStrip()
-        }
+        mIdx = (mIdx - 1) % 1
+        return mFavoriteComicStrips[mIdx]
     }
 
     override suspend fun getLatestFavoriteComicStrip(): ComicStripDomainModel {
-        val latestComicStrip = database.getLatestComicStrip()
-        currentComicStripId = latestComicStrip.id
-        return latestComicStrip.toDomainModel()
+        if(!::mFavoriteComicStrips.isInitialized){
+            mFavoriteComicStrips = database.getAllComicStrips().map { it.toDomainModel() }.toMutableList()
+        }
+
+        val latestComicStrip = mFavoriteComicStrips[0]
+        mIdx = 0
+        return latestComicStrip
     }
 
     override suspend fun addComicStripToFavorites(comicStrip: ComicStripDomainModel): Boolean {
         val model = ComicStripRoomModel.fromDomainModel(comicStrip)
-        val response = database.addComicStrip(model)
-        return response > 0
+        val response = database.addComicStrip(model) > 0
+        if(response) mFavoriteComicStrips.add(comicStrip) // Append the comic
+        return response
     }
 
     override suspend fun getLatestComicStrip(): ComicStripDomainModel {

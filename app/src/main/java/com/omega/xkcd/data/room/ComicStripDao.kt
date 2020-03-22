@@ -12,6 +12,9 @@ interface ComicStripDao {
     @Query("SELECT * from ComicStripRoomModel WHERE id = (SELECT max(id) from ComicStripRoomModel)")
     suspend fun getLatestComicStrip(): ComicStripRoomModel
 
+    @Query("SELECT * from ComicStripRoomModel")
+    suspend fun getAllComicStrips(): List<ComicStripRoomModel>
+
     @Query("SELECT * from ComicStripRoomModel WHERE id = :id")
     suspend fun getComicStrip(id: Int): ComicStripRoomModel
 
