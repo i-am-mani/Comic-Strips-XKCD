@@ -1,5 +1,6 @@
 package com.omega.xkcd.data.repository
 
+import android.util.Log
 import com.omega.xkcd.data.room.ComicStripDao
 import com.omega.xkcd.data.retrofit.XKCDComicStripRetrofitService
 import com.omega.xkcd.data.room.ComicStripRoomModel
@@ -8,6 +9,13 @@ import com.omega.xkcd.domain.repository.ComicStripsRepository
 
 class ComicStripRepositoryImpl(private val database: ComicStripDao, private val remote: XKCDComicStripRetrofitService) :
     ComicStripsRepository {
+    override suspend fun removeComicStripFromFavorite(comicStrip: ComicStripDomainModel): Boolean {
+        val roomModel = ComicStripRoomModel.fromDomainModel(comicStrip)
+        val removeCount = database.removeComicStrip(roomModel.number)
+        Log.d("REPO", "removeCount = $removeCount")
+        return removeCount > 0
+    }
+
     private var currentComicStripId:Int = -1
 
     override suspend fun getNextFavoriteComicStrip(): ComicStripDomainModel {

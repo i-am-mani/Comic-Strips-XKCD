@@ -18,7 +18,9 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     val mComicStrip = MutableLiveData<ComicStripDomainModel>()
     private var MAX_COMIC_NUMBER = 2222
     var mState = MutableLiveData<State>(State.All)
-    val isFavoriteMode: LiveData<Boolean> = Transformations.map(mState) { mState.value == State.Favorite}
+    val isFavoriteMode: LiveData<Boolean> =
+        Transformations.map(mState) { mState.value == State.Favorite }
+
     init {
         fetchLatestComicStrip()
     }
@@ -44,7 +46,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     private fun fetchComicWithNumber(number: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val comicStrip = if(mState.value == State.All){
+                val comicStrip = if (mState.value == State.All) {
                     repository.getComicStrip(number)
                 } else {
                     repository.getLatestFavoriteComicStrip()
@@ -58,7 +60,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     }
 
     fun nextComicStrip() {
-        Toast.makeText(getApplication(),"Fetching next comic",Toast.LENGTH_LONG).show()
+        Toast.makeText(getApplication(), "Fetching next comic", Toast.LENGTH_LONG).show()
         if (mState.value == State.All) {
             val comicNumber = getComicStripNumber()
             if (comicNumber != null && (comicNumber + 1 <= MAX_COMIC_NUMBER)) {
@@ -66,30 +68,30 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
             }
         } else {
             viewModelScope.launch {
-                try{
+                try {
                     val favoriteComicStrip = repository.getNextFavoriteComicStrip()
                     mComicStrip.postValue(favoriteComicStrip)
-                } catch (e: Exception){
-                    Log.e(TAG, "An Error Occurred $e",e)
+                } catch (e: Exception) {
+                    Log.e(TAG, "An Error Occurred $e", e)
                 }
             }
         }
     }
 
     fun previousComicStrip() {
-        Toast.makeText(getApplication(),"Fetching previous comic",Toast.LENGTH_LONG).show()
+        Toast.makeText(getApplication(), "Fetching previous comic", Toast.LENGTH_LONG).show()
         if (mState.value == State.All) {
             val comicNumber = getComicStripNumber()
             if (comicNumber != null && (comicNumber - 1 > 0)) {
                 fetchComicWithNumber(comicNumber - 1)
             }
-        }else {
+        } else {
             viewModelScope.launch {
-                try{
+                try {
                     val favoriteComicStrip = repository.getPreviousFavoriteComicStrip()
                     mComicStrip.postValue(favoriteComicStrip)
-                } catch (e: Exception){
-                    Log.e(TAG, "An Error Occurred $e",e)
+                } catch (e: Exception) {
+                    Log.e(TAG, "An Error Occurred $e", e)
                 }
             }
         }
@@ -108,9 +110,9 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
         viewModelScope.launch {
             mComicStrip.value?.let { comicStrip ->
                 val response = repository.addComicStripToFavorites(comicStrip)
-                if(response){
+                if (response) {
                     comicStrip.isFavorite = true
-                    Toast.makeText(getApplication(),"Added to favorites",Toast.LENGTH_LONG).show()
+                    Toast.makeText(getApplication(), "Added to favorites", Toast.LENGTH_LONG).show()
                 }
                 Log.d(TAG, "reponse == $response")
             }
@@ -118,10 +120,22 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
         }
     }
 
+    fun removeFromLocalDB() {
+        viewModelScope.launch {
+            val comicStripDomainModel = mComicStrip.value
+            if (comicStripDomainModel != null) {
+                val isRemoved =
+                    repository.removeComicStripFromFavorite(comicStripDomainModel)
+                comicStripDomainModel.isFavorite = !isRemoved
+            }
+            mComicStrip.value = mComicStrip.value
+        }
+    }
+
     fun toggleFavoriteMode() {
-        if(mState.value == State.All){
+        if (mState.value == State.All) {
             mState.value = State.Favorite
-        } else{
+        } else {
             mState.value = State.All
         }
         fetchLatestComicStrip()

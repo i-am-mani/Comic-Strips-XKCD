@@ -17,4 +17,7 @@ interface ComicStripDao {
 
     @Query("SELECT * from ComicStripRoomModel WHERE number=:number")
     suspend fun getComicStripByNumber(number:Int): ComicStripRoomModel?
+
+    @Query("DELETE FROM ComicStripRoomModel WHERE number=:number")
+    suspend fun removeComicStrip(number: Int): Int
 }
