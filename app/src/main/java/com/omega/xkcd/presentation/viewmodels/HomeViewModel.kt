@@ -1,11 +1,18 @@
 package com.omega.xkcd.presentation.viewmodels
 
 import android.app.Application
+import android.app.Dialog
 import android.util.Log
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.omega.xkcd.R
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
+import com.omega.xkcd.presentation.recyclerview.FavoriteComicStripAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -54,6 +61,11 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
 
                 mComicStrip.postValue(comicStrip)
             } catch (e: Exception) {
+                Toast.makeText(
+                    getApplication(),
+                    "This maybe the last comic strip",
+                    Toast.LENGTH_LONG
+                ).show()
                 Log.e(TAG, "An Exception Occurred", e)
             }
         }
@@ -114,7 +126,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                     comicStrip.isFavorite = true
                     Toast.makeText(getApplication(), "Added to favorites", Toast.LENGTH_LONG).show()
                 }
-                Log.d(TAG, "reponse == $response")
+                Log.d(TAG, "response == $response")
             }
             mComicStrip.value = mComicStrip.value
         }
@@ -139,6 +151,10 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
             mState.value = State.All
         }
         fetchLatestComicStrip()
+    }
+
+    fun loadComicStrip(comicStrip: ComicStripDomainModel) {
+        mComicStrip.value = comicStrip
     }
 
 }

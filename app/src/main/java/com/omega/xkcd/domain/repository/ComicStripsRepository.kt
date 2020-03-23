@@ -11,4 +11,5 @@ interface ComicStripsRepository {
     suspend fun getNextFavoriteComicStrip(): ComicStripDomainModel
     suspend fun getPreviousFavoriteComicStrip(): ComicStripDomainModel
     suspend fun removeComicStripFromFavorite(comicStrip: ComicStripDomainModel): Boolean
+    suspend fun getAllFavoriteComicStrips(): List<ComicStripDomainModel>
 }

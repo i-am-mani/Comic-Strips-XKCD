@@ -66,14 +66,20 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+                        <ProgressBar
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/Blue800"
+                            android:visibility="@{viewmodel.mComicStrip == null?View.VISIBLE:View.GONE}"/>
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            app:showImage="@{viewmodel.mComicStrip.imgRemotePath}"
-                            app:srcCompat="@mipmap/ic_launcher" />
+                            app:showImage="@{viewmodel.mComicStrip.imgRemotePath}" />
 
 
                         <ImageButton
@@ -95,6 +101,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
                             android:layout_gravity="bottom"
                             android:gravity="center"
                             android:orientation="horizontal">
@@ -129,6 +136,16 @@
                                 android:tint="#1E88E5"
                                 app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
+
+                            <ImageButton
+                                android:id="@+id/btnShowFavComicStrips"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_list"
+                                android:tint="@android:color/holo_green_dark"
+                                app:backgroundTint="@android:color/transparent"
+                                android:visibility="@{viewmodel.isFavoriteMode().booleanValue()?View.VISIBLE:View.GONE}"
+                                app:borderWidth="0dp" />
                         </LinearLayout>
                     </FrameLayout>
 
@@ -157,11 +174,13 @@
                     android:text="@{viewmodel.mComicStrip.date.toLocaleString()}"
                     tools:text="03-12-2003" />
 
+                <!-- Alt Tex -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     app:cardElevation="7dp"
+                    android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
                     app:cardUseCompatPadding="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -188,7 +207,7 @@
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
                             android:text="@{viewmodel.mComicStrip.alt}"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             tools:text="Huge Huge alt text" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
