@@ -11,6 +11,7 @@
             name="viewmodel"
             type="com.omega.xkcd.presentation.viewmodels.HomeViewModel" />
 
+        <import type="com.omega.xkcd.utils.Utils"/>
     </data>
 
     <LinearLayout
@@ -34,9 +35,8 @@
                     android:padding="16dp"
                     app:cardCornerRadius="4dp"
                     app:cardUseCompatPadding="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+                    app:layout_constraintStart_toEndOf="@+id/comicNumber"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
@@ -171,7 +171,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
-                    android:text="@{viewmodel.mComicStrip.date.toLocaleString()}"
+                    android:text="@{Utils.getFormatedDate(viewmodel.mComicStrip.date)}"
                     tools:text="03-12-2003" />
 
                 <!-- Alt Tex -->
@@ -213,19 +213,20 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textSize="8sp"
-                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
-                    app:hide="@{viewmodel.isFavoriteMode()}"
-                    android:src="@drawable/ic_favorite"
-                    app:tint="@android:color/holo_red_dark"
+                    android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/DangerLightText"
+                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
+                    android:src="@drawable/ic_favorite"
+                    android:textSize="8sp"
+                    app:hide="@{viewmodel.isFavoriteMode()}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@android:color/holo_red_dark" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     style="@style/Widget.MaterialComponents.Button.TextButton"
