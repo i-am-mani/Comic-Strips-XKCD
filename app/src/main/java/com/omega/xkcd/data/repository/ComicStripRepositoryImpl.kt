@@ -53,6 +53,9 @@ class ComicStripRepositoryImpl(private val database: ComicStripDao, private val 
     }
 
     override suspend fun addComicStripToFavorites(comicStrip: ComicStripDomainModel): Boolean {
+        if(!::mFavoriteComicStrips.isInitialized){
+            initializeFavoriteComicStrips()
+        }
         val model = ComicStripRoomModel.fromDomainModel(comicStrip)
         val response = database.addComicStrip(model) > 0
         if(response) mFavoriteComicStrips.add(comicStrip) // Append the comic
