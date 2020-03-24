@@ -35,7 +35,8 @@
                     android:padding="16dp"
                     app:cardCornerRadius="4dp"
                     app:cardUseCompatPadding="true"
-                    app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+
+                    app:layout_constraintEnd_toStartOf="@+id/frameLayout"
                     app:layout_constraintStart_toEndOf="@+id/comicNumber"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -167,11 +168,10 @@
                     android:id="@+id/comicDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
                     android:text="@{Utils.getFormatedDate(viewmodel.mComicStrip.date)}"
+                    app:layout_constraintEnd_toStartOf="@+id/frameLayout"
+                    app:layout_constraintStart_toEndOf="@+id/comicNumber"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
                     tools:text="03-12-2003" />
 
                 <!-- Alt Tex -->
@@ -212,36 +212,38 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingActionButton"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                <FrameLayout
+                    android:id="@+id/frameLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/DangerLightText"
-                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
-                    android:src="@drawable/ic_favorite"
-                    android:textSize="8sp"
-                    app:hide="@{viewmodel.isFavoriteMode()}"
+                    android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@android:color/holo_red_dark" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="#90CAF9"
-                    android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
-                    app:hide="@{!viewmodel.isFavoriteMode()}"
-                    android:src="@drawable/ic_fire"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/materialCardView2"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/Blue800" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/floatingActionButton"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/DangerLightText"
+                        android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
+                        android:src="@drawable/ic_favorite"
+                        android:textSize="8sp"
+                        app:hide="@{viewmodel.isFavoriteMode()}"
+                        app:tint="@android:color/holo_red_dark" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#90CAF9"
+                        android:onClick="@{(view) -> viewmodel.toggleFavoriteMode()}"
+                        android:src="@drawable/ic_fire"
+                        android:visibility="visible"
+                        app:hide="@{!viewmodel.isFavoriteMode()}"
+
+                        app:tint="@color/Blue800" />
+                </FrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </LinearLayout>
