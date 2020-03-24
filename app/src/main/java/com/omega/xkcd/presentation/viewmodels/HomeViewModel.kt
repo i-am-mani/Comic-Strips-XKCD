@@ -1,22 +1,14 @@
 package com.omega.xkcd.presentation.viewmodels
 
 import android.app.Application
-import android.app.Dialog
 import android.util.Log
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.omega.xkcd.R
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
-import com.omega.xkcd.presentation.recyclerview.FavoriteComicStripAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
-
 
 class HomeViewModel(private val repository: ComicStripsRepository, application: Application) :
     AndroidViewModel(application) {
@@ -44,6 +36,11 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 mComicStrip.postValue(latestComicStrip)
                 MAX_COMIC_NUMBER = latestComicStrip.number
             } catch (e: Exception) {
+                Toast.makeText(
+                    getApplication(),
+                    "\uD83D\uDE05 Failed to fetch comic, Please restart the app when connected.",
+                    Toast.LENGTH_LONG
+                ).show()
                 Log.e(TAG, "Exception occurred = $e", e)
             }
         }
@@ -72,7 +69,6 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     }
 
     fun nextComicStrip() {
-        Toast.makeText(getApplication(), "Fetching next comic", Toast.LENGTH_LONG).show()
         if (mState.value == State.All) {
             val comicNumber = getComicStripNumber()
             if (comicNumber != null && (comicNumber + 1 <= MAX_COMIC_NUMBER)) {
@@ -91,7 +87,6 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     }
 
     fun previousComicStrip() {
-        Toast.makeText(getApplication(), "Fetching previous comic", Toast.LENGTH_LONG).show()
         if (mState.value == State.All) {
             val comicNumber = getComicStripNumber()
             if (comicNumber != null && (comicNumber - 1 > 0)) {
@@ -124,7 +119,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 val response = repository.addComicStripToFavorites(comicStrip)
                 if (response) {
                     comicStrip.isFavorite = true
-                    Toast.makeText(getApplication(), "Added to favorites", Toast.LENGTH_LONG).show()
+                    Toast.makeText(getApplication(), "\uD83D\uDC93 Added to favorites", Toast.LENGTH_LONG).show()
                 }
                 Log.d(TAG, "response == $response")
             }
@@ -138,7 +133,20 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
             if (comicStripDomainModel != null) {
                 val isRemoved =
                     repository.removeComicStripFromFavorite(comicStripDomainModel)
-                comicStripDomainModel.isFavorite = !isRemoved
+                if (isRemoved) {
+                    comicStripDomainModel.isFavorite = false
+                    Toast.makeText(
+                        getApplication(),
+                        "\uD83D\uDC94 Comic Strip Removed from Favorite",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        getApplication(),
+                        "Failed to Remove Comic Strip from Favorite",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             mComicStrip.value = mComicStrip.value
         }
@@ -147,8 +155,10 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     fun toggleFavoriteMode() {
         if (mState.value == State.All) {
             mState.value = State.Favorite
+            Toast.makeText(getApplication(),"Favorites \uD83D\uDC96",Toast.LENGTH_SHORT).show()
         } else {
             mState.value = State.All
+            Toast.makeText(getApplication(),"All",Toast.LENGTH_SHORT).show()
         }
         fetchLatestComicStrip()
     }
