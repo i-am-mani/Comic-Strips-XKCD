@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
+import com.omega.xkcd.utils.NoComicStripFound
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -27,14 +28,33 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     private fun fetchLatestComicStrip() {
         viewModelScope.launch {
             try {
-                val latestComicStrip = if (mState.value == State.All) {
-                    repository.getLatestComicStrip()
-                } else {
-                    repository.getLatestFavoriteComicStrip()
-                }
-
+                val latestComicStrip = repository.getLatestComicStrip()
                 mComicStrip.postValue(latestComicStrip)
                 MAX_COMIC_NUMBER = latestComicStrip.number
+            } catch (e: Exception) {
+                Toast.makeText(
+                    getApplication(),
+                    "\uD83D\uDE05 Failed to fetch comic, Please restart the app when connected.",
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.e(TAG, "Exception occurred = $e", e)
+            }
+        }
+    }
+
+    private fun fetchLatestFavoriteComicStrip() {
+        viewModelScope.launch {
+            try {
+                val latestComicStrip = repository.getLatestFavoriteComicStrip()
+                mComicStrip.postValue(latestComicStrip)
+                MAX_COMIC_NUMBER = latestComicStrip.number
+            } catch (e: NoComicStripFound) {
+                Toast.makeText(
+                    getApplication(),
+                    "\uD83D\uDE05 No Comic Strips Have Been Added to Favorite.",
+                    Toast.LENGTH_LONG
+                ).show()
+                mComicStrip.postValue(null)
             } catch (e: Exception) {
                 Toast.makeText(
                     getApplication(),
@@ -119,7 +139,11 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 val response = repository.addComicStripToFavorites(comicStrip)
                 if (response) {
                     comicStrip.isFavorite = true
-                    Toast.makeText(getApplication(), "\uD83D\uDC93 Added to favorites", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        getApplication(),
+                        "\uD83D\uDC93 Added to favorites",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 Log.d(TAG, "response == $response")
             }
@@ -155,12 +179,14 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     fun toggleFavoriteMode() {
         if (mState.value == State.All) {
             mState.value = State.Favorite
-            Toast.makeText(getApplication(),"Favorites \uD83D\uDC96",Toast.LENGTH_SHORT).show()
+            fetchLatestFavoriteComicStrip()
+            Toast.makeText(getApplication(), "Favorites \uD83D\uDC96", Toast.LENGTH_SHORT).show()
         } else {
             mState.value = State.All
-            Toast.makeText(getApplication(),"All",Toast.LENGTH_SHORT).show()
+            fetchLatestComicStrip()
+            Toast.makeText(getApplication(), "All", Toast.LENGTH_SHORT).show()
         }
-        fetchLatestComicStrip()
+
     }
 
     fun loadComicStrip(comicStrip: ComicStripDomainModel) {
