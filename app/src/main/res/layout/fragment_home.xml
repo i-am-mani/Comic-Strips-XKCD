@@ -31,7 +31,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/materialCardView2"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:padding="16dp"
                     app:cardCornerRadius="4dp"
                     app:cardUseCompatPadding="true"
@@ -47,10 +47,11 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
+                        android:ellipsize="end"
                         android:fontFamily="casual"
                         android:text="@{viewmodel.mComicStrip.title}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        tools:text="2010 and 202" />
+                        tools:text="2010 and    202222" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -80,6 +81,7 @@
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
+                            android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
                             app:showImage="@{viewmodel.mComicStrip.imgRemotePath}" />
 
 
