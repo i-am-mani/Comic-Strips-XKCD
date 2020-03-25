@@ -32,14 +32,17 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 mComicStrip.postValue(latestComicStrip)
                 MAX_COMIC_NUMBER = latestComicStrip.number
             } catch (e: Exception) {
-                Toast.makeText(
-                    getApplication(),
+                toast(
                     "\uD83D\uDE05 Failed to fetch comic, Please restart the app when connected.",
                     Toast.LENGTH_LONG
-                ).show()
+                )
                 Log.e(TAG, "Exception occurred = $e", e)
             }
         }
+    }
+
+    private fun toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
+        Toast.makeText(getApplication(), msg, length).show()
     }
 
     private fun fetchLatestFavoriteComicStrip() {
@@ -49,18 +52,13 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 mComicStrip.postValue(latestComicStrip)
                 MAX_COMIC_NUMBER = latestComicStrip.number
             } catch (e: NoComicStripFound) {
-                Toast.makeText(
-                    getApplication(),
-                    "\uD83D\uDE05 No Comic Strips Have Been Added to Favorite.",
-                    Toast.LENGTH_LONG
-                ).show()
+                toast("\uD83D\uDE05 No Comic Strips Have Been Added to Favorite.")
                 mComicStrip.postValue(null)
             } catch (e: Exception) {
-                Toast.makeText(
-                    getApplication(),
+                toast(
                     "\uD83D\uDE05 Failed to fetch comic, Please restart the app when connected.",
                     Toast.LENGTH_LONG
-                ).show()
+                )
                 Log.e(TAG, "Exception occurred = $e", e)
             }
         }
@@ -78,11 +76,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
 
                 mComicStrip.postValue(comicStrip)
             } catch (e: Exception) {
-                Toast.makeText(
-                    getApplication(),
-                    "This maybe the last comic strip",
-                    Toast.LENGTH_LONG
-                ).show()
+                toast("This maybe the last comic strip!")
                 Log.e(TAG, "An Exception Occurred", e)
             }
         }
@@ -128,20 +122,18 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
         if (mState.value == State.All) {
             val nextComicNumber = Random.nextInt(MAX_COMIC_NUMBER)
             fetchComicWithNumber(nextComicNumber)
-        } else{
+        } else {
             viewModelScope.launch {
                 try {
                     val randomFavoriteComicStrip = repository.getRandomFavoriteComicStrip()
                     mComicStrip.postValue(randomFavoriteComicStrip)
-                } catch (e: NoComicStripFound){
-                    Toast.makeText(
-                        getApplication(),
+                } catch (e: NoComicStripFound) {
+                    toast(
                         "\uD83D\uDE05 No Comic Strips Have Been Added to Favorite.",
                         Toast.LENGTH_LONG
-                    ).show()
-                }
-                catch (e: Exception) {
-                    Log.e(TAG, "Exception occurs = $e",e)
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception occurs = $e", e)
                 }
             }
         }
@@ -157,11 +149,7 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                 val response = repository.addComicStripToFavorites(comicStrip)
                 if (response) {
                     comicStrip.isFavorite = true
-                    Toast.makeText(
-                        getApplication(),
-                        "\uD83D\uDC93 Added to favorites",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    toast("\uD83D\uDC93 Added to favorites", Toast.LENGTH_LONG)
                 }
                 Log.d(TAG, "response == $response")
             }
@@ -177,17 +165,9 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
                     repository.removeComicStripFromFavorite(comicStripDomainModel)
                 if (isRemoved) {
                     comicStripDomainModel.isFavorite = false
-                    Toast.makeText(
-                        getApplication(),
-                        "\uD83D\uDC94 Comic Strip Removed from Favorite",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toast("\uD83D\uDC94 Comic Strip Removed from Favorite")
                 } else {
-                    Toast.makeText(
-                        getApplication(),
-                        "Failed to Remove Comic Strip from Favorite",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toast("Failed to Remove Comic Strip from Favorite")
                 }
             }
             mComicStrip.value = mComicStrip.value
@@ -198,11 +178,11 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
         if (mState.value == State.All) {
             mState.value = State.Favorite
             fetchLatestFavoriteComicStrip()
-            Toast.makeText(getApplication(), "Favorites \uD83D\uDC96", Toast.LENGTH_SHORT).show()
+            toast("Favorites \uD83D\uDC96")
         } else {
             mState.value = State.All
             fetchLatestComicStrip()
-            Toast.makeText(getApplication(), "All", Toast.LENGTH_SHORT).show()
+            toast("All")
         }
 
     }
