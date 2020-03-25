@@ -125,8 +125,26 @@ class HomeViewModel(private val repository: ComicStripsRepository, application: 
     }
 
     fun loadRandomComicStrip() {
-        val nextComicNumber = Random.nextInt(MAX_COMIC_NUMBER)
-        fetchComicWithNumber(nextComicNumber)
+        if (mState.value == State.All) {
+            val nextComicNumber = Random.nextInt(MAX_COMIC_NUMBER)
+            fetchComicWithNumber(nextComicNumber)
+        } else{
+            viewModelScope.launch {
+                try {
+                    val randomFavoriteComicStrip = repository.getRandomFavoriteComicStrip()
+                    mComicStrip.postValue(randomFavoriteComicStrip)
+                } catch (e: NoComicStripFound){
+                    Toast.makeText(
+                        getApplication(),
+                        "\uD83D\uDE05 No Comic Strips Have Been Added to Favorite.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                catch (e: Exception) {
+                    Log.e(TAG, "Exception occurs = $e",e)
+                }
+            }
+        }
     }
 
     private fun getComicStripNumber(): Int? {

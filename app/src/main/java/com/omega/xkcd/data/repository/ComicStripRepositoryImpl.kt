@@ -5,6 +5,8 @@ import com.omega.xkcd.data.retrofit.XKCDComicStripRetrofitService
 import com.omega.xkcd.data.room.ComicStripRoomModel
 import com.omega.xkcd.domain.models.ComicStripDomainModel
 import com.omega.xkcd.domain.repository.ComicStripsRepository
+import com.omega.xkcd.utils.NoComicStripFound
+import kotlin.random.Random
 
 class ComicStripRepositoryImpl(private val database: ComicStripDao, private val remote: XKCDComicStripRetrofitService) :
     ComicStripsRepository {
@@ -26,6 +28,14 @@ class ComicStripRepositoryImpl(private val database: ComicStripDao, private val 
         return status
     }
 
+    override suspend fun getRandomFavoriteComicStrip(): ComicStripDomainModel{
+       val randomIndex = if(mFavoriteComicStrips.size > 0) {
+           Random.nextInt(mFavoriteComicStrips.size)
+       } else {
+           throw NoComicStripFound("Cannot fetch random comic strip")
+       }
+        return mFavoriteComicStrips[randomIndex]
+    }
     override suspend fun getNextFavoriteComicStrip(): ComicStripDomainModel {
         val count = mFavoriteComicStrips.count()
         // wrap around if out of index
@@ -40,6 +50,7 @@ class ComicStripRepositoryImpl(private val database: ComicStripDao, private val 
 
     override suspend fun getLatestFavoriteComicStrip(): ComicStripDomainModel {
         initializeFavoriteComicStrips()
+        if(mFavoriteComicStrips.count() == 0) throw NoComicStripFound("No Favorite comic strip has been found")
         val latestComicStrip = mFavoriteComicStrips[0]
         mIdx = 0
         return latestComicStrip
