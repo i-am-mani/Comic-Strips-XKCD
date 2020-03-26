@@ -65,49 +65,60 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/comicDate">
 
-                    <FrameLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ProgressBar
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_gravity="center"
-                            android:indeterminate="true"
-                            android:indeterminateTint="@color/Blue800"
-                            android:visibility="@{viewmodel.mComicStrip == null?View.VISIBLE:View.GONE}"/>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                        <ImageView
+                        <FrameLayout
+
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerInside"
-                            android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
-                            app:showImage="@{viewmodel.mComicStrip.imgRemotePath}" />
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_weight="9">
+
+                            <ProgressBar
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_gravity="center"
+                                android:indeterminate="true"
+                                android:indeterminateTint="@color/Blue800"
+                                android:visibility="@{viewmodel.mComicStrip == null?View.VISIBLE:View.GONE}" />
 
 
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start|center"
-                            android:backgroundTint="@android:color/transparent"
-                            android:onClick="@{() -> viewmodel.previousComicStrip()}"
-                            android:src="@drawable/ic_previous" />
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitCenter"
+                                android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
+                                app:showImage="@{viewmodel.mComicStrip.imgRemotePath}"
+                                tools:src="@drawable/sample_comic" />
 
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|center"
-                            android:backgroundTint="@android:color/transparent"
-                            android:onClick="@{() -> viewmodel.nextComicStrip()}"
-                            android:src="@drawable/ic_next" />
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start|center"
+                                android:backgroundTint="@android:color/transparent"
+                                android:onClick="@{() -> viewmodel.previousComicStrip()}"
+                                android:src="@drawable/ic_previous" />
+
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end|center"
+                                android:backgroundTint="@android:color/transparent"
+                                android:onClick="@{() -> viewmodel.nextComicStrip()}"
+                                android:src="@drawable/ic_next" />
+                        </FrameLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}"
-                            android:layout_gravity="bottom"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:visibility="@{!(viewmodel.mComicStrip == null)?View.VISIBLE:View.GONE}">
 
                             <ImageButton
                                 android:layout_width="wrap_content"
@@ -115,8 +126,8 @@
                                 android:layout_marginEnd="8dp"
                                 android:onClick="@{() -> viewmodel.addToLocalDB()}"
                                 android:src='@drawable/ic_favorite_plus'
-                                android:visibility="@{!viewmodel.mComicStrip.isFavorite? View.VISIBLE:View.GONE}"
                                 android:tint="@android:color/holo_red_dark"
+                                android:visibility="@{!viewmodel.mComicStrip.isFavorite? View.VISIBLE:View.GONE}"
                                 app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
 
@@ -126,8 +137,8 @@
                                 android:layout_marginEnd="8dp"
                                 android:onClick="@{() -> viewmodel.removeFromLocalDB()}"
                                 android:src='@drawable/ic_favorite_minus'
-                                android:visibility="@{viewmodel.mComicStrip.isFavorite? View.VISIBLE:View.GONE}"
                                 android:tint="@android:color/holo_red_dark"
+                                android:visibility="@{viewmodel.mComicStrip.isFavorite? View.VISIBLE:View.GONE}"
                                 app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
 
@@ -146,11 +157,11 @@
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/ic_list"
                                 android:tint="@android:color/holo_green_dark"
-                                app:backgroundTint="@android:color/transparent"
                                 android:visibility="@{viewmodel.isFavoriteMode().booleanValue()?View.VISIBLE:View.GONE}"
+                                app:backgroundTint="@android:color/transparent"
                                 app:borderWidth="0dp" />
                         </LinearLayout>
-                    </FrameLayout>
+                    </LinearLayout>
 
 
                 </com.google.android.material.card.MaterialCardView>
